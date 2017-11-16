@@ -38,7 +38,7 @@ public class TestCourseManager {
 	 * specific calls to Admin's createClass to yield the correct behavior in the unit test itself.
 	 */
 	public void setupMocking() {
-		Mockito.doNothing().when(this.admin).createClass(Mockito.anyString(), AdditionalMatchers.lt(2017), Mockito.anyString(), Mockito.anyInt());
+		Mockito.doNothing().when(this.admin).createClass(Mockito.anyString(), AdditionalMatchers.lt(2017), Mockito.anyString(), AdditionalMatchers.leq(0));
 	}
 
 	@Test
@@ -56,6 +56,12 @@ public class TestCourseManager {
 	@Test
 	public void testCreateClassInFuture() {
 		this.courseManager.createClass("ECS161", 2018, "Instructor", 1);
+		Mockito.verify(this.admin, Mockito.never()).createClass(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyInt());
+	}
+	
+	@Test
+	public void testCreateWithMxCapacity() {
+		this.courseManager.createClass("ECS161", 2017, "Instructor", 1000);
 		Mockito.verify(this.admin, Mockito.never()).createClass(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyInt());
 	}
 }
